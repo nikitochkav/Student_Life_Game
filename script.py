@@ -1,227 +1,156 @@
-
 import random as r
 
-hp = 0
-coins = 0
-damage = 0
+class Player:
+    def __init__(self, hp, coins, damage):
+        self.hp = hp
+        self.coins = coins
+        self.damage = damage
 
+    def print_stats(self):
+        print(f"У тебя {self.hp} жизней, {self.damage} урона и {self.coins} монет.")
 
-def printParameters():
-    print("У тебя {0} жизней, {1} урона и {2} монет.".format(hp, damage, coins))
+    def print_hp(self):
+        print(f"У тебя {self.hp} жизней.")
 
+    def print_coins(self):
+        print(f"У тебя {self.coins} монет.")
 
-def printHp():
-    print("У тебя", hp, "жизней.")
+    def print_damage(self):
+        print(f"У тебя {self.damage} урона.")
 
-
-def printCoins():
-    print("У тебя", coins, "монет.")
-
-
-def printDamage():
-    print("У тебя", damage, "урона.")
-
-
-def meetShop():
-    global hp
-    global damage
-    global coins
-
-    def buy(cost):
-        global coins
-        if coins >= cost:
-            coins -= cost
-            printCoins()
+    def buy(self, cost):
+        if self.coins >= cost:
+            self.coins -= cost
+            self.print_coins()
             return True
         print("У тебя маловато монет!")
         return False
 
-    weaponLvl = r.randint(1, 3)
-    weaponDmg = r.randint(1, 5) * weaponLvl
-    weapons = ["Бутылка получше", "Меч из Майнкрафта", "Тяпка", "Цветочек с клумбы", "Котлета из общего холодильника",
-               "Аргумент"]
-    weaponRarities = ["Обычный(ая)", "Редкий(ая)", "Легендарный(ая)"]
-    weaponRarity = weaponRarities[weaponLvl - 1]
-    weaponCost = r.randint(300, 1000) * weaponLvl
+
+class Monster:
+    def __init__(self, level):
+        self.level = level
+        self.hp = level
+        self.damage = level * 2 - 1
+        self.name = r.choice(["Пьяный Игоря", "Clop", "Cholop", "Madrock", "Lilbitch"])
+
+    def print_stats(self):
+        print(f"Ты набрел на {self.name}, у него {self.level} уровень, {self.hp} жизней и {self.damage} урона.")
+
+
+def meet_shop(player):
+    weapon_lvl = r.randint(1, 3)
+    weapon_dmg = r.randint(1, 5) * weapon_lvl
+    weapons = ["Бутылка получше", "Меч из Майнкрафта", "Тяпка", "Цветочек с клумбы", 
+               "Котлета из общего холодильника", "Аргумент"]
+    weapon_rarities = ["Обычный(ая)", "Редкий(ая)", "Легендарный(ая)"]
+    weapon_rarity = weapon_rarities[weapon_lvl - 1]
+    weapon_cost = r.randint(300, 1000) * weapon_lvl
     weapon = r.choice(weapons)
 
-    oneHpCost = 500
-    threeHpCost = 1200
+    one_hp_cost = 500
+    three_hp_cost = 1200
 
     print("""
 ============================================================================================================
 На пути тебе встретился местный барыга Степан!
 
-Оооо Привет Игнат, как дела? Как жизнь молодая?
-Ладно не суть. У меня тут для тебя кое-что припасено.
-Будешь брать?
-
 Он предлагает тебе ознакомиться с его ассортиментом
 ============================================================================================================
     """)
-    printParameters()
+    player.print_stats()
 
     if input("""
     Что ты будешь делать: 
-    1 - Давай показывай, солнышко
+    1 - Давай показывай
     2 - Не, спасибо
 """) == '1':
         print(f"""
 ============================================================================================================
-Степа распахивает свой длинный плащ и вы в ожидании чего-то особенного наклоняетесь посмотреть поближе
-
-    Там оказывается:
-    1) Обед из Арены(+1HP) - {oneHpCost} рублей
-    2) Шашлычок из Кавказкого дворика(+3HP) - {threeHpCost} рублей
-    3) {weaponRarity} {weapon}(+{weaponDmg}урон(а)) - {weaponCost} рублей
+1) Обед из Арены (+1HP) - {one_hp_cost} рублей
+2) Шашлычок из Кавказского дворика (+3HP) - {three_hp_cost} рублей
+3) {weapon_rarity} {weapon} (+{weapon_dmg} урона) - {weapon_cost} рублей
 ============================================================================================================
-
 Что хочешь приобрести?""")
         choice = input()
-        if choice == "1":
-            print('\nХм... Дайка мне обед, который ты взял в Арене\nСтепан: Варенье? Малиновое? Аааа. Понял\n')
-            if buy(oneHpCost):
-                hp += 1
-                printHp()
-            print('Вы съели Карбонару\n')
-        elif choice == "2":
-            print('\nХочу шашлычок из Кавказкого дворика\n*Степан протягивает тебе шампур шашлыка*\n')
-            if buy(threeHpCost):
-                hp += 3
-                printHp()
-            print('Вы очень вкусно покушали\n')
-        elif choice == "3":
-            print('\nХочу вот эту валыну\n')
-            if buy(weaponCost):
-                print('')
-                damage = weaponDmg
-                print('У вас теперь новое оружие')
-                printDamage()
-        elif choice == "4":
-            print("\nНе, спасибо, что-то ничего не хочется")
-
-        else:
-            print("Прости, но кроме этого у меня больше ничего нет.")
-    print("""============================================================================================================
-""")
+        if choice == "1" and player.buy(one_hp_cost):
+            player.hp += 1
+            player.print_hp()
+        elif choice == "2" and player.buy(three_hp_cost):
+            player.hp += 3
+            player.print_hp()
+        elif choice == "3" and player.buy(weapon_cost):
+            player.damage = weapon_dmg
+            print('У тебя теперь новое оружие!')
+            player.print_damage()
 
 
-def meetMonster():
-    global hp
-    global coins
-
-    monsterLvl = r.randint(1, 3)
-    monsterHp = monsterLvl
-    monsterDmg = monsterLvl * 2 - 1
-    monsters = ["Пьяный Игоря", "Clop", "Cholop", "Madrock", "Lilbitch"]
-
-    monster = r.choice(monsters)
-
-    print(f"""
+def meet_monster(player):
+    monster = Monster(r.randint(1, 3))
+    print("""
 ============================================================================================================
-Ты набрел на {monster}, у него {monsterLvl} уровень, {monsterHp} жизней и {monsterDmg} урона.
-Придется драться
-
 *музыка боя из Скайрима*
 """)
-    printParameters()
+    monster.print_stats()
+    player.print_stats()
 
-    while monsterHp > 0:
+    while monster.hp > 0:
         choice = input("""
-    Что будешь делать?
-    1 - Биться как мужик, я же Игнат, а не фермер какой-то
-    2 - Сбегу как попуск, я слабенький
+    1 - Биться
+    2 - Сбежать
         """)
 
-
-
         if choice == "1":
-            monsterHp -= damage
-            print("Ты атаковал монстра и у него осталось", monsterHp, "жизней.")
+            monster.hp -= player.damage
+            print(f"Ты атаковал монстра, у него осталось {monster.hp} жизней.")
+            if monster.hp > 0:
+                player.hp -= monster.damage
+                print(f"Монстр атаковал, у тебя осталось {player.hp} жизней.")
+                if player.hp <= 0:
+                    print("Ты проиграл.")
+                    break
         elif choice == "2":
-            chance = r.randint(0, monsterLvl)
-            if chance == 0:
-                print("Тебе удалось сбежать с поля боя!")
+            if r.randint(0, monster.level) == 0:
+                print("Тебе удалось сбежать!")
                 break
-
-        else:
-            print("Монстр оказался чересчур сильным и догнал тебя...")
-            continue
-
-        if monsterHp > 0:
-            hp -= monsterDmg
-            print("Монстр атаковал и у тебя осталось", hp, "жизней.")
-
-            if hp <= 0:
-                break
-            else:
-                loot = r.randint(0, 2) + monsterLvl
-                coins += loot
-                print("Тебе удалось одолеть монстра, за что ты получил", loot, "монет.")
-                printCoins()
+        if monster.hp <= 0:
+            loot = r.randint(0, 2) + monster.level
+            player.coins += loot
+            print(f"Ты победил монстра и получил {loot} монет.")
+            player.print_coins()
 
 
-def initGame(initHp, initCoins, initDamage):
-    global hp
-    global coins
-    global damage
-
-    hp = initHp
-    coins = initCoins
-    damage = initDamage
-
+def init_game():
+    player = Player(3, 500, 1)
     print(f"""============================================================================================================
                                     Добро пожаловть в игру "Жизнь Игната"
 
-            Это приключение обычного студента IT-колледжа Сириус по имени Игнат, который мечтал
-                               не отчислиться в первом семестре после сессии
-
 На старте у вас есть:
-Предмет: Бутылка (урон {damage})
-Жизни: {hp}
-Деньги: {coins} рублей
-В вашем инвентаре повесилась мышь
-
-Ваше приключение начинается здесь
+Урон: {player.damage}
+Жизни: {player.hp}
+Деньги: {player.coins} рублей
 ============================================================================================================
 """)
+    return player
 
 
-def gameLoop():
+def game_loop(player):
     situation = r.randint(0, 10)
-
     if situation == 0:
-        meetShop()
+        meet_shop(player)
     elif situation == 1:
-        meetMonster()
+        meet_monster(player)
     else:
-        input("Блуждаем по колледжу...\n")
+        print("Блуждаем по колледжу...\n")
 
 
-initGame(3, 500, 1)
+player = init_game()
 
-while True:
-    gameLoop()
-
-    if hp <= 0:
-        if input(f"""
-============================================================================================================
-Вы проиграли, вас нашли на полу. На утро вы узнаете что на вас написали три докладные.
-На следующий день вас отвели в Деканат и отчислили. Жалко вас(((
-
-Хотите попробовать ещё раз?
-1 - Да, конечно, мне просто не повезло, я не попуск
-2 - Я пуся, больше не хочу
-============================================================================================================
-""") == "1":
-            initGame(10, 500, 1)
+while player.hp > 0:
+    game_loop(player)
+    if player.hp <= 0:
+        if input("Хотите попробовать ещё раз? 1 - Да 2 - Нет\n") == "1":
+            player = init_game()
         else:
-            print("Счастья здоровья")
+            print("Счастья здоровья!")
             break
-
-
-print('Игнат заспавнился в общаге, сразу же имея при себе бутылку пива и ашечку, скоро придут воспитатели')
-print('Что будешь делать?')
-   h = 1 ' - Ничего, потому что мне пофиг'
-   k = 2 ' - Предложу бутылку пива воспитателю'
-if

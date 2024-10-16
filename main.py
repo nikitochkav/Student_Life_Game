@@ -1,29 +1,24 @@
-from time import sleep
 import sys
-menu = 'Добро пожаловать в игру "Жизнь Игната"\n'
-for i in menu:
-        sleep(0.026)
-        sys.stdout.write(i)
+from time import sleep
+
+# Функция для печати текста с задержкой
+def slow_print(text, delay=0.02):
+    for char in text:
+        sys.stdout.write(char)
         sys.stdout.flush()
-start = 'Введите "start", чтобы начать игру, а "end", чтобы Игната отчислили еще до начала сессии \n'
-for i in start:
-        sleep(0.026)
-        sys.stdout.write(i)
-        sys.stdout.flush()
-menu = input()
-if menu == 'start':
-    a = 'Приключения Игната по сдаче зачёта начинаются\n'
-    for i in a:
-        sleep(0.026)
-        sys.stdout.write(i)
-        sys.stdout.flush()
+        sleep(delay)
+    print()  # Для переноса строки после текста
+
+# Главное меню
+slow_print('Добро пожаловать в игру "Жизнь Игната"\n')
+slow_print('Введите "start", чтобы начать игру, а "end", чтобы Игната отчислили еще до начала сессии\n')
+
+# Обработка выбора пользователя
+menu_choice = input().strip().lower()
+
+if menu_choice == 'start':
+    slow_print('Приключения Игната по сдаче зачёта начинаются\n')
+elif menu_choice == 'end':
+    slow_print('Bruh, Игната отчислили еще до начала сессии\n')
 else:
-    b = 'Bruh Игната отчислили еще до начала сессии\n'
-    for i in b:
-        sleep(0.026)
-        sys.stdout.write(i)
-        sys.stdout.flush()
-
-
-
-
+    slow_print('Неверный ввод. Попробуйте снова.\n')
